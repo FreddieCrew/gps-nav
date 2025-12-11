@@ -80,7 +80,7 @@ stock GPS_Start(playerid, Float:targetX, Float:targetY, Float:targetZ) {
     if(GetClosestMapNodeToPoint(pX, pY, pZ, startNode) != 0) return 0;
     if(GetClosestMapNodeToPoint(targetX, targetY, targetZ, targetNode) != 0) return 0;
 
-    CallLocalFunction("OnPlayerGPSActivate", "ifff", playerid, targetX, targetY, targetZ)
+    CallLocalFunction("OnPlayerGPSActivate", "ifff", playerid, targetX, targetY, targetZ);
 
     FindPathThreaded(startNode, targetNode, "GPS_OnCalculated", "i", playerid);
     return 1;
