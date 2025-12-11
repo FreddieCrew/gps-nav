@@ -59,6 +59,7 @@ enum E_GPS_DATA {
 
 static g_GPSData[MAX_PLAYERS][E_GPS_DATA];
 
+forward OnPlayerGPSActivate(playerid, Float:X, Float:Y, Float:Z);
 forward OnPlayerGPSArrival(playerid);
 
 
@@ -78,6 +79,8 @@ stock GPS_Start(playerid, Float:targetX, Float:targetY, Float:targetZ) {
     new MapNode:startNode, MapNode:targetNode;
     if(GetClosestMapNodeToPoint(pX, pY, pZ, startNode) != 0) return 0;
     if(GetClosestMapNodeToPoint(targetX, targetY, targetZ, targetNode) != 0) return 0;
+
+    CallLocalFunction("OnPlayerGPSActivate", "ifff", playerid, targetX, targetY, targetZ)
 
     FindPathThreaded(startNode, targetNode, "GPS_OnCalculated", "i", playerid);
     return 1;
