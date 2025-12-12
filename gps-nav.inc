@@ -36,6 +36,10 @@
     #define GPS_SMOOTHNESS      0.55
 #endif
 
+#if !defined GPS_CHECK_LIMIT
+    #define GPS_CHECK_LIMIT 50 // Prevents iterating the whole buffer. 50 is plenty for normal driving.
+#endif
+
 enum E_GPS_DATA {
     bool:gps_IsActive,
     Path:gps_CurrentPath,
@@ -257,8 +261,10 @@ public GPS_Internal_Update(playerid) {
     new head = g_GPSData[playerid][gps_ZoneHead];
     new tail = g_GPSData[playerid][gps_ZoneTail];
     new i = tail;
+    
+    new checkLimit = GPS_CHECK_LIMIT;
 
-    while(i != head) {
+    while(i != head && checkLimit > 0) {
         if(g_GPSData[playerid][gps_ZoneIDs][i] != -1) {
             new Float:dx = pX - g_GPSData[playerid][gps_ZoneX][i];
             new Float:dy = pY - g_GPSData[playerid][gps_ZoneY][i];
@@ -272,6 +278,7 @@ public GPS_Internal_Update(playerid) {
             }
         }
         i = (i + 1) % MAX_GPS_ZONES;
+        checkLimit--;
     }
 
     if(minDistSq > (GPS_MAX_DEVIATION * GPS_MAX_DEVIATION)) {
