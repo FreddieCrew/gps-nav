@@ -1,6 +1,11 @@
 #include <open.mp>
+
+// Settings
+#define GPS_LINE_WIDTH 25.0
+
 #include <gps-nav>
-#include <zcmd>
+#include <izcmd>
+#include <sscanf2>
 
 main() {
     print("\n----------------------------------");
@@ -41,11 +46,17 @@ public OnPlayerClickMap(playerid, Float:fX, Float:fY, Float:fZ)
     return 1;
 }
 
+public OnPlayerGPSActivate(playerid, Float:X, Float:Y, Float:Z) {
+    SetPlayerMapIcon(playerid, 12, X, Y, Z, 41, 0, MAPICON_GLOBAL);
+    return 1;
+}
+
 public OnPlayerGPSArrival(playerid)
 {
     GameTextForPlayer(playerid, "~g~DESTINATION REACHED!", 5000, 3);
     PlayerPlaySound(playerid, 1185, 0.0, 0.0, 0.0); // Success sound
     SendClientMessage(playerid, 0x00FF00FF, "GPS: You have arrived at your destination.");
+    RemovePlayerMapIcon(playerid, 12);
     return 1;
 }
 
@@ -54,6 +65,7 @@ CMD:stopgps(playerid, params[])
     if(GPS_IsActive(playerid)) {
         GPS_Stop(playerid);
         SendClientMessage(playerid, -1, "GPS: Navigation stopped.");
+        RemovePlayerMapIcon(playerid, 12);
     } else {
         SendClientMessage(playerid, -1, "GPS: No active navigation.");
     }
@@ -76,5 +88,14 @@ CMD:longroute(playerid, params[])
 {
     GPS_Start(playerid, 1699.0, 1435.0, 10.0); 
     SendClientMessage(playerid, -1, "GPS: Calculating long distance route to LV Airport...");
+    return 1;
+}
+
+CMD:gps(playerid, params[]) {
+    new Float:X, Float:Y, Float:Z;
+
+    if(sscanf(params, "p<,>fff", X, Y, Z)) return SendClientMessage(playerid, -1, "/gps [X] [Y] [Z]");
+
+    GPS_Start(playerid, X, Y, Z);
     return 1;
 }
