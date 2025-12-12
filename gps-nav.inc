@@ -4,7 +4,6 @@
 #define _gpsnav_included
 
 #tryinclude <open.mp>
-#include <a_samp>
 #include <GPS>
 
 // Settings
